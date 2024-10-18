@@ -27,23 +27,25 @@ snapshotRenvDependencies <- function(bundleDir,
   parseRenvDependencies(bundleDir, snapshot = TRUE)
 }
 
-parseRenvDependencies <- function(bundleDir, snapshot = FALSE) {
+parseRenvDependencies <- function(bundleDir, lib_dir = NULL, snapshot = FALSE) {
   renvLock <- jsonlite::read_json(renvLockFile(bundleDir))
 
   repos <- setNames(
     vapply(renvLock$R$Repositories, "[[", "URL", FUN.VALUE = character(1)),
     vapply(renvLock$R$Repositories, "[[", "Name", FUN.VALUE = character(1))
   )
+
   deps <- standardizeRenvPackages(
     renvLock$Packages,
     repos,
     biocPackages = biocPackages(bundleDir)
   )
+
   if (nrow(deps) == 0) {
     return(data.frame())
   }
 
-  deps$description <- lapply(deps$Package, package_record)
+  deps$description <- lapply(deps$Package, package_record, lib_dir = lib_dir)
 
   if (!snapshot) {
     lib_versions <- unlist(lapply(deps$description, "[[", "Version"))
@@ -146,3 +148,4 @@ removeRenv <- function(path, lockfile = TRUE) {
   }
   unlink(file.path(path, "renv"), recursive = TRUE)
 }
+

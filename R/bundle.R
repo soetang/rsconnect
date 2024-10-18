@@ -112,6 +112,7 @@ createAppManifest <- function(appDir,
                               envManagement = NULL,
                               envManagementR = NULL,
                               envManagementPy = NULL,
+                              lib_dir = NULL,
                               verbose = FALSE,
                               quiet = FALSE) {
 
@@ -121,6 +122,7 @@ createAppManifest <- function(appDir,
     packages <- bundlePackages(
       bundleDir = appDir,
       extraPackages = extraPackages,
+      lib_dir = lib_dir,
       verbose = verbose,
       quiet = quiet
     )
