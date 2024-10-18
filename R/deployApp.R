@@ -236,8 +236,9 @@ deployApp <- function(appDir = getwd(),
                       envManagement = NULL,
                       envManagementR = NULL,
                       envManagementPy = NULL,
+                      lib_dir = NULL,
                       space = NULL
-                      ) {
+) {
 
   check_string(appDir)
   if (isStaticFile(appDir) && !dirExists(appDir)) {
@@ -456,7 +457,8 @@ deployApp <- function(appDir = getwd(),
       image = image,
       envManagement = envManagement,
       envManagementR = envManagementR,
-      envManagementPy = envManagementPy
+      envManagementPy = envManagementPy,
+      lib_dir = lib_dir
     )
     size <- format(file_size(bundlePath), big.mark = ",")
     taskComplete(quiet, "Created {size}b bundle")
@@ -624,7 +626,9 @@ bundleApp <- function(appName,
                       image = NULL,
                       envManagement = NULL,
                       envManagementR = NULL,
-                      envManagementPy = NULL) {
+                      envManagementPy = NULL,
+                      lib_dir = lib_dir
+) {
   logger <- verboseLogger(verbose)
 
   # get application users (for non-document deployments)
@@ -641,6 +645,7 @@ bundleApp <- function(appName,
       appPrimaryDoc = appMetadata$appPrimaryDoc,
       appMode = appMetadata$appMode
   )
+
   defer(unlink(bundleDir, recursive = TRUE))
 
   # generate the manifest and write it into the bundle dir
@@ -655,6 +660,7 @@ bundleApp <- function(appName,
     envManagement = envManagement,
     envManagementR = envManagementR,
     envManagementPy = envManagementPy,
+    lib_dir = lib_dir,
     verbose = verbose,
     quiet = quiet
   )
@@ -706,7 +712,7 @@ openURL <- function(client, application, launch.browser, on.failure, deploymentS
   } else if (is.function(on.failure)) {
     on.failure(NULL)
   }
-    # or open no url if things failed
+  # or open no url if things failed
 }
 
 runStartupScripts <- function(appDir, quiet = FALSE, verbose = FALSE) {
