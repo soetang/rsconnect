@@ -34,6 +34,7 @@ deployApp(
   envManagement = NULL,
   envManagementR = NULL,
   envManagementPy = NULL,
+  lib_dir = NULL,
   space = NULL
 )
 }
