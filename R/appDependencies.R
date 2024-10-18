@@ -123,7 +123,11 @@ appDependencies <- function(appDir = getwd(),
     ))
   }
 
-  bundleDir <- bundleAppDir(appDir, appFiles)
+  bundleDir <- bundleAppDir(
+    appDir = appDir,
+    appFiles = appFiles,
+    appMode = appMetadata$appMode
+  )
   defer(unlink(bundleDir, recursive = TRUE))
 
   extraPackages <- inferRPackageDependencies(appMetadata)
@@ -132,7 +136,7 @@ appDependencies <- function(appDir = getwd(),
 }
 
 needsR <- function(appMetadata) {
-  if (appMetadata$appMode == "static") {
+  if (appMetadata$appMode %in% c("static", "tensorflow-saved-model")) {
     return(FALSE)
   }
 

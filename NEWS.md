@@ -1,5 +1,36 @@
 # rsconnect (development version)
 
+* Use the public Connect server API endpoint `/v1/tasks/{id}` to poll task
+  progress. (#1088)
+
+# rsconnect 1.3.1
+
+* Skip tests when packages "foreign" and "MASS" are not available. (#1081)
+
+# rsconnect 1.3.0
+
+* `deployApp(logLevel = "quiet")` suppresses Posit Connect deployment task
+  output. (#1051)
+
+* `deployApp(logLevel = "quiet")` and `writeManifest(quiet=TRUE)` suppress
+  output when using renv to analyze dependencies. (#1051)
+
+* `deployApp()` and `writeManifest()` receive the default value for the
+  `image` argument from the `RSCONNECT_IMAGE` environment variable. (#1063)
+
+* `deployTF()` can deploy a TensorFlow model to Posit Connect. Requires Posit
+  Connect 2024.05.0 or higher.
+
+* Skip tests when suggested packages are not available. Skip Quarto tests when
+  run by CRAN. (#1074)
+
+# rsconnect 1.2.2
+
+* Use internally computed SHA1 sums and PKI signing when SHA1 is disabled 
+  in FIPS mode. (#768, #1054)
+
+* Allow Quarto content with a rendered script as its primary target. (#1055)
+
 # rsconnect 1.2.1
 
 * Restore the `LC_TIME` locale after computing an RFC-2616 date. (#1035)

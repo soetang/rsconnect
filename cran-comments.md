@@ -1,6 +1,7 @@
 ## Summary
 
-* Address locale and Quarto publishing issues reported by a number of users.
+Skip tests when "foreign" and "MASS" are not available, identified by the CRAN
+noSuggests check. This should resolve the remaining noSuggests failures.
 
 ## R CMD check results
 
@@ -8,7 +9,7 @@
 
 ## revdepcheck results
 
-We checked 22 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 24 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
  * We saw 0 new problems
  * We failed to check 0 packages

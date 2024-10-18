@@ -64,9 +64,9 @@ computePackageDependencies <- function(bundleDir,
     # from the bundle (retaining the renv.lock).
     removeRenv(bundleDir, lockfile = FALSE)
   } else {
-    taskStart(quiet, "Capturing R dependencies with renv")
+    taskStart(quiet, "Capturing R dependencies")
     # TODO: give user option to choose between implicit and explicit
-    deps <- snapshotRenvDependencies(bundleDir, extraPackages, verbose = verbose)
+    deps <- snapshotRenvDependencies(bundleDir, extraPackages, quiet = quiet, verbose = verbose)
   }
   taskComplete(quiet, "Found {nrow(deps)} dependenc{?y/ies}")
 

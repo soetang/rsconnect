@@ -1,5 +1,11 @@
 # Docs: https://docs.posit.co/connect/api/
 
+stripConnectTimestamps <- function(messages) {
+  # Strip timestamps, if found
+  timestamp_re <- "^\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3,} "
+  gsub(timestamp_re, "", messages)
+}
+
 connectClient <- function(service, authInfo) {
   list(
 
@@ -96,48 +102,33 @@ connectClient <- function(service, authInfo) {
       GET(service, authInfo, paste0("/applications/", applicationId))
     },
 
-    ## Tasks API
-
-    listTasks = function() {
-      path <- "/tasks"
-      GET(service, authInfo, path)
-    },
-
-    getTask = function(taskId) {
-      path <- file.path("/tasks", taskId)
-      GET(service, authInfo, path)
-    },
-
-    killTask = function(taskId) {
-      path <- file.path("/tasks", taskId, "kill")
-      POST_JSON(service, authInfo, path, list())
-    },
-
-    waitForTask = function(taskId, quiet) {
-      start <- 0
+    waitForTask = function(taskId, quiet = FALSE) {
+      first <- 0
+      wait <- 1
       while (TRUE) {
-        path <- paste0(file.path("/tasks", taskId), "?first_status=", start)
+        path <- paste0(
+          "/v1/tasks/", taskId,
+          "?first=", first,
+          "&wait=", wait)
         response <- GET(service, authInfo, path)
 
-        if (length(response$status) > 0) {
-          messages <- unlist(response$status)
+        if (length(response$output) > 0) {
+          if (!quiet) {
+            messages <- unlist(response$output)
+            messages <- stripConnectTimestamps(messages)
 
-          # Strip timestamps, if found
-          timestamp_re <- "\\d{4}/\\d{2}/\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3,} "
-          messages <- gsub(timestamp_re, "", messages)
+            # Made headers more prominent.
+            heading <- grepl("^# ", messages)
+            messages[heading] <- cli::style_bold(messages[heading])
+            cat(paste0(messages, "\n", collapse = ""))
+          }
 
-          # Made headers more prominent.
-          heading <- grepl("^# ", messages)
-          messages[heading] <- cli::style_bold(messages[heading])
-          cat(paste0(messages, "\n", collapse = ""))
-
-          start <- response$last_status
+          first <- response$last
         }
 
         if (length(response$finished) > 0 && response$finished) {
           return(response)
         }
-        Sys.sleep(1)
       }
     },
 
