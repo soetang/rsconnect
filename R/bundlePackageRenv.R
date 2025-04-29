@@ -48,7 +48,7 @@ parseRenvDependencies <- function(bundleDir, snapshot = FALSE) {
     return(data.frame())
   }
 
-  deps$description <- lapply(deps$Package, package_record)
+  deps$description <- lapply(deps$Package, package_record, lib_dir = renv::paths$library(project = bundleDir))
 
   if (!snapshot) {
     lib_versions <- unlist(lapply(deps$description, "[[", "Version"))
